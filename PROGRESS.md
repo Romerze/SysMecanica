@@ -1,6 +1,6 @@
 # Progreso del Desarrollo - SysMecanica
 
-## Estado Actual: 3 de 10 Fases Completadas (30%)
+## Estado Actual: 4 de 10 Fases Completadas (40%)
 
 Última actualización: 2026-02-04
 
@@ -109,11 +109,64 @@ DELETE /api/users/:id           - Eliminar usuario (admin)
 
 ---
 
+### ✅ FASE 4: Módulo de Clientes y Vehículos (COMPLETADA)
+**Commits:** `7ee8ce2 - backend`, `9725536 - frontend`
+
+**Logros Backend:**
+- ✅ Modelo de Cliente con CRUD completo
+- ✅ Modelo de Vehículo con CRUD completo
+- ✅ 8 endpoints de clientes
+- ✅ 9 endpoints de vehículos
+- ✅ Búsqueda y autocomplete
+- ✅ Validaciones (email, placa, VIN, identificación)
+- ✅ Relaciones cliente-vehículo
+- ✅ Historial de servicios
+
+**Logros Frontend:**
+- ✅ Lista de clientes con búsqueda y paginación
+- ✅ Formulario de nuevo cliente con validación
+- ✅ Lista de vehículos con búsqueda y paginación
+- ✅ Modal de confirmación de eliminación
+- ✅ Estados vacíos y de carga
+- ✅ Notificaciones toast
+
+**API Endpoints Disponibles:**
+```
+GET    /api/clientes              - Listar clientes
+GET    /api/clientes/search       - Buscar clientes
+GET    /api/clientes/:id          - Ver cliente
+POST   /api/clientes              - Crear cliente
+PUT    /api/clientes/:id          - Actualizar cliente
+DELETE /api/clientes/:id          - Eliminar cliente
+GET    /api/clientes/:id/vehiculos  - Vehículos del cliente
+GET    /api/clientes/:id/historial  - Historial de servicios
+
+GET    /api/vehiculos             - Listar vehículos
+GET    /api/vehiculos/search      - Buscar vehículos
+GET    /api/vehiculos/marcas      - Obtener marcas
+GET    /api/vehiculos/:id         - Ver vehículo
+POST   /api/vehiculos             - Crear vehículo
+PUT    /api/vehiculos/:id         - Actualizar vehículo
+DELETE /api/vehiculos/:id         - Eliminar vehículo
+GET    /api/vehiculos/:id/historial - Historial de servicios
+```
+
+**Archivos Clave:**
+- `backend/src/models/Cliente.js`
+- `backend/src/models/Vehiculo.js`
+- `backend/src/controllers/clienteController.js`
+- `backend/src/controllers/vehiculoController.js`
+- `frontend/pages/clientes/lista.html`
+- `frontend/pages/clientes/nuevo.html`
+- `frontend/pages/vehiculos/lista.html`
+
+---
+
 ## 🚧 Próximas Fases
 
-### FASE 4: Módulo de Clientes y Vehículos
+### FASE 5: Módulo de Órdenes de Trabajo
 **Estado:** Pendiente
-**Estimación:** 8-10 horas
+**Estimación:** 12-16 horas
 
 **Tareas:**
 - [ ] Backend: Modelo y controlador de Clientes
@@ -229,12 +282,12 @@ curl -X POST http://localhost:3000/api/auth/login \
 
 ## 📊 Estadísticas del Proyecto
 
-**Commits:** 3
-**Archivos Creados:** 34
+**Commits:** 7
+**Archivos Creados:** 44+
 **Líneas de Código:**
-- Backend: ~2,500 líneas
+- Backend: ~4,400 líneas
 - Frontend CSS: ~2,000 líneas
-- Frontend JS: ~500 líneas
+- Frontend JS/HTML: ~1,500 líneas
 - SQL: ~400 líneas
 
 **Tecnologías:**
@@ -274,4 +327,19 @@ curl -X POST http://localhost:3000/api/auth/login \
 ---
 
 **Estado del Proyecto:** 🟢 En Desarrollo Activo
-**Progreso:** 30% Completado (3 de 10 fases)
+**Progreso:** 40% Completado (4 de 10 fases)
+
+## ✨ Nuevas Funcionalidades Disponibles
+
+### Gestión de Clientes
+- ✅ Listar todos los clientes con búsqueda y filtros
+- ✅ Crear nuevos clientes con formulario validado
+- ✅ Ver detalles de cliente
+- ✅ Eliminar clientes
+- ✅ Ver vehículos asociados al cliente
+
+### Gestión de Vehículos
+- ✅ Listar todos los vehículos
+- ✅ Búsqueda por placa, marca, modelo
+- ✅ Ver información de cliente propietario
+- ✅ Filtros y paginación
