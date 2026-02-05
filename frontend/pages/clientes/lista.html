@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - SysMecanica</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/forms.css">
+    <link rel="stylesheet" href="../../assets/css/tables.css">
+    <link rel="stylesheet" href="../../assets/css/modals.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-dark);
+            color: var(--white);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            z-index: var(--z-fixed);
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .sidebar-nav {
+            padding: var(--spacing-md) 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: var(--spacing-md) var(--spacing-lg);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .nav-item.active {
+            background-color: rgba(37, 99, 235, 0.2);
+            color: var(--white);
+            border-left-color: var(--primary-light);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: var(--header-height);
+            background-color: var(--white);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding: 0 var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .content {
+            flex: 1;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../dashboard.html" class="sidebar-logo">
+                🔧 SysMecanica
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="nav-item-icon">📊</span> Dashboard
+            </a>
+            <a href="lista.html" class="nav-item active">
+                <span class="nav-item-icon">👥</span> Clientes
+            </a>
+            <a href="../vehiculos/lista.html" class="nav-item">
+                <span class="nav-item-icon">🚗</span> Vehículos
+            </a>
+            <a href="../ordenes/lista.html" class="nav-item">
+                <span class="nav-item-icon">📋</span> Órdenes de Trabajo
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Clientes</h1>
+            <button class="btn btn-secondary btn-sm" id="logoutBtn">Cerrar Sesión</button>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- Toolbar -->
+            <div class="card mb-lg">
+                <div class="card-body">
+                    <div class="flex justify-between items-center gap-md flex-wrap">
+                        <div class="search-box" style="min-width: 300px;">
+                            <input
+                                type="text"
+                                id="searchInput"
+                                class="form-control"
+                                placeholder="Buscar por nombre, identificación o email..."
+                            >
+                            <span class="search-icon">🔍</span>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="window.location.href='nuevo.html'">
+                            ➕ Nuevo Cliente
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Clientes -->
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Identificación</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Ciudad</th>
+                                    <th>Vehículos</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientesTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center py-lg">
+                                        <div class="spinner spinner-lg"></div>
+                                        Cargando clientes...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="table-pagination">
+                        <div class="text-sm text-secondary">
+                            Mostrando <span id="showingFrom">0</span> a <span id="showingTo">0</span> de <span id="totalClientes">0</span> clientes
+                        </div>
+
+                        <ul class="pagination" id="pagination"></ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Eliminar -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-backdrop" onclick="closeDeleteModal()"></div>
+        <div class="modal-dialog modal-dialog-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Confirmar Eliminación</h3>
+                    <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro que desea eliminar el cliente <strong id="deleteClienteName"></strong>?</p>
+                    <p class="text-sm text-secondary mt-sm">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancelar</button>
+                    <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/api/client.js"></script>
+    <script src="../../assets/js/utils/storage.js"></script>
+    <script src="../../assets/js/utils/notifications.js"></script>
+
+    <script>
+        // Verificar autenticación
+        if (!storage.auth.isAuthenticated()) {
+            window.location.href = '../index.html';
+        }
+
+        // Variables globales
+        let currentPage = 1;
+        let totalPages = 1;
+        let searchTimeout;
+
+        // Cargar clientes
+        async function loadClientes(page = 1, search = '') {
+            try {
+                const params = {
+                    page,
+                    limit: 20
+                };
+
+                if (search) {
+                    params.search = search;
+                }
+
+                const response = await api.get('/clientes', params);
+
+                displayClientes(response.clientes);
+                displayPagination(response.pagination);
+
+                currentPage = page;
+                totalPages = response.pagination.totalPages;
+            } catch (error) {
+                console.error('Error al cargar clientes:', error);
+                notifications.error('Error al cargar clientes');
+            }
+        }
+
+        // Mostrar clientes en la tabla
+        function displayClientes(clientes) {
+            const tbody = document.getElementById('clientesTableBody');
+
+            if (clientes.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-xl">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📋</div>
+                                <h3 class="empty-state-title">No hay clientes</h3>
+                                <p class="empty-state-text">Comienza agregando tu primer cliente</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = clientes.map(cliente => `
+                <tr>
+                    <td>
+                        <strong>${cliente.nombre} ${cliente.apellido}</strong>
+                    </td>
+                    <td>${cliente.identificacion || '-'}</td>
+                    <td>${cliente.email || '-'}</td>
+                    <td>${cliente.celular || cliente.telefono || '-'}</td>
+                    <td>${cliente.ciudad || '-'}</td>
+                    <td>
+                        <span class="badge badge-primary">${cliente.total_vehiculos}</span>
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="window.location.href='detalle.html?id=${cliente.id}'" title="Ver detalle">
+                                👁️
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="confirmDelete(${cliente.id}, '${cliente.nombre} ${cliente.apellido}')" title="Eliminar">
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Mostrar paginación
+        function displayPagination(pagination) {
+            document.getElementById('showingFrom').textContent = pagination.total === 0 ? 0 : ((pagination.page - 1) * pagination.limit + 1);
+            document.getElementById('showingTo').textContent = Math.min(pagination.page * pagination.limit, pagination.total);
+            document.getElementById('totalClientes').textContent = pagination.total;
+
+            const paginationEl = document.getElementById('pagination');
+
+            if (pagination.totalPages <= 1) {
+                paginationEl.innerHTML = '';
+                return;
+            }
+
+            let pages = '';
+
+            // Anterior
+            pages += `
+                <li class="page-item ${pagination.page === 1 ? 'disabled' : ''}">
+                    <a class="page-link" onclick="${pagination.page > 1 ? `loadClientes(${pagination.page - 1}, document.getElementById('searchInput').value)` : ''}">
+                        ‹
+                    </a>
+                </li>
+            `;
+
+            // Páginas
+            for (let i = 1; i <= pagination.totalPages; i++) {
+                if (
+                    i === 1 ||
+                    i === pagination.totalPages ||
+                    (i >= pagination.page - 1 && i <= pagination.page + 1)
+                ) {
+                    pages += `
+                        <li class="page-item ${i === pagination.page ? 'active' : ''}">
+                            <a class="page-link" onclick="loadClientes(${i}, document.getElementById('searchInput').value)">
+                                ${i}
+                            </a>
+                        </li>
+                    `;
+                } else if (i === pagination.page - 2 || i === pagination.page + 2) {
+                    pages += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            // Siguiente
+            pages += `
+                <li class="page-item ${pagination.page === pagination.totalPages ? 'disabled' : ''}">
+                    <a class="page-link" onclick="${pagination.page < pagination.totalPages ? `loadClientes(${pagination.page + 1}, document.getElementById('searchInput').value)` : ''}">
+                        ›
+                    </a>
+                </li>
+            `;
+
+            paginationEl.innerHTML = pages;
+        }
+
+        // Búsqueda
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadClientes(1, e.target.value);
+            }, 500);
+        });
+
+        // Confirmar eliminación
+        function confirmDelete(id, nombre) {
+            document.getElementById('deleteClienteName').textContent = nombre;
+            document.getElementById('deleteModal').classList.add('show');
+
+            document.getElementById('confirmDeleteBtn').onclick = async () => {
+                try {
+                    await api.delete(`/clientes/${id}`);
+                    notifications.success('Cliente eliminado exitosamente');
+                    closeDeleteModal();
+                    loadClientes(currentPage, document.getElementById('searchInput').value);
+                } catch (error) {
+                    notifications.error(error.message || 'Error al eliminar cliente');
+                }
+            };
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            storage.auth.clear();
+            window.location.href = '../index.html';
+        });
+
+        // Cargar clientes al inicio
+        loadClientes();
+    </script>
+</body>
+</html>
