@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SysMecanica</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/forms.css">
+    <link rel="stylesheet" href="../assets/css/tables.css">
+    <link rel="stylesheet" href="../assets/css/modals.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-dark);
+            color: var(--white);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-normal);
+            z-index: var(--z-fixed);
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .sidebar-nav {
+            padding: var(--spacing-md) 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: var(--spacing-md) var(--spacing-lg);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .nav-item.active {
+            background-color: rgba(37, 99, 235, 0.2);
+            color: var(--white);
+            border-left-color: var(--primary-light);
+        }
+
+        .nav-item-icon {
+            margin-right: var(--spacing-sm);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background-color: var(--white);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding: 0 var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .header-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            cursor: pointer;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition-fast);
+        }
+
+        .user-menu:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-card-primary { border-left-color: var(--primary-color); }
+        .stat-card-success { border-left-color: var(--success-color); }
+        .stat-card-warning { border-left-color: var(--warning-color); }
+        .stat-card-danger { border-left-color: var(--danger-color); }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-card-title {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .stat-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card-value {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+        }
+
+        .stat-card-footer {
+            margin-top: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                🔧 SysMecanica
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <span class="nav-item-icon">📊</span>
+                Dashboard
+            </a>
+            <a href="clientes/lista.html" class="nav-item">
+                <span class="nav-item-icon">👥</span>
+                Clientes
+            </a>
+            <a href="vehiculos/lista.html" class="nav-item">
+                <span class="nav-item-icon">🚗</span>
+                Vehículos
+            </a>
+            <a href="ordenes/lista.html" class="nav-item">
+                <span class="nav-item-icon">📋</span>
+                Órdenes de Trabajo
+            </a>
+            <a href="inventario/lista.html" class="nav-item">
+                <span class="nav-item-icon">📦</span>
+                Inventario
+            </a>
+            <a href="facturacion/lista.html" class="nav-item">
+                <span class="nav-item-icon">💰</span>
+                Facturación
+            </a>
+            <a href="reportes/index.html" class="nav-item">
+                <span class="nav-item-icon">📈</span>
+                Reportes
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Dashboard</h1>
+
+            <div class="header-right">
+                <div class="user-menu" id="userMenu">
+                    <div class="avatar">
+                        <span id="userInitials">A</span>
+                    </div>
+                    <div>
+                        <div class="font-medium text-sm" id="userName">Administrador</div>
+                        <div class="text-xs text-secondary" id="userRole">admin</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary btn-sm" id="logoutBtn">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card stat-card-primary">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-title">Órdenes Activas</div>
+                            <div class="stat-card-value" id="ordenesActivas">0</div>
+                        </div>
+                        <div class="stat-card-icon" style="background-color: rgba(37, 99, 235, 0.1); color: var(--primary-color);">
+                            📋
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        Total de órdenes en proceso
+                    </div>
+                </div>
+
+                <div class="stat-card stat-card-success">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-title">Completadas Hoy</div>
+                            <div class="stat-card-value" id="ordenesHoy">0</div>
+                        </div>
+                        <div class="stat-card-icon" style="background-color: rgba(16, 185, 129, 0.1); color: var(--success-color);">
+                            ✓
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        Órdenes finalizadas hoy
+                    </div>
+                </div>
+
+                <div class="stat-card stat-card-warning">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-title">Stock Bajo</div>
+                            <div class="stat-card-value" id="stockBajo">0</div>
+                        </div>
+                        <div class="stat-card-icon" style="background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color);">
+                            ⚠
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        Repuestos con stock mínimo
+                    </div>
+                </div>
+
+                <div class="stat-card stat-card-danger">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-title">Facturas Pendientes</div>
+                            <div class="stat-card-value" id="facturasPendientes">0</div>
+                        </div>
+                        <div class="stat-card-icon" style="background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color);">
+                            💰
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        Facturas sin pagar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Welcome Section -->
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-2xl font-bold mb-md">Bienvenido a SysMecanica</h2>
+                    <p class="text-secondary mb-lg">
+                        Sistema de Gestión de Taller Mecánico. Aquí podrás gestionar clientes, vehículos,
+                        órdenes de trabajo, inventario y facturación de manera eficiente.
+                    </p>
+
+                    <div class="grid grid-cols-1 grid-md-2 grid-lg-3 gap-md">
+                        <div>
+                            <h3 class="font-semibold mb-sm">🚀 Inicio Rápido</h3>
+                            <ul style="list-style: disc; padding-left: 1.5rem; color: var(--text-secondary);">
+                                <li>Registrar nuevos clientes</li>
+                                <li>Crear órdenes de trabajo</li>
+                                <li>Gestionar inventario</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold mb-sm">📋 Estado del Sistema</h3>
+                            <ul style="list-style: disc; padding-left: 1.5rem; color: var(--text-secondary);">
+                                <li>Base de datos: <span class="badge badge-success">Activa</span></li>
+                                <li>API: <span class="badge badge-success">Conectada</span></li>
+                                <li>Versión: <span class="badge badge-secondary">v1.0.0</span></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold mb-sm">👤 Tu Cuenta</h3>
+                            <ul style="list-style: disc; padding-left: 1.5rem; color: var(--text-secondary);">
+                                <li>Usuario: <strong id="userEmailInfo">-</strong></li>
+                                <li>Rol: <strong id="userRoleInfo">-</strong></li>
+                                <li>Última sesión: <strong>Hoy</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/api/client.js"></script>
+    <script src="../assets/js/utils/storage.js"></script>
+    <script src="../assets/js/utils/notifications.js"></script>
+
+    <script>
+        // Verificar autenticación
+        if (!storage.auth.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+
+        // Cargar datos del usuario
+        const user = storage.auth.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.nombre;
+            document.getElementById('userRole').textContent = user.rol;
+            document.getElementById('userEmailInfo').textContent = user.email;
+            document.getElementById('userRoleInfo').textContent = user.rol;
+
+            // Iniciales del usuario
+            const initials = user.nombre.split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('userInitials').textContent = initials.substring(0, 2);
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await api.post('/auth/logout');
+            } catch (error) {
+                console.error('Error en logout:', error);
+            } finally {
+                storage.auth.clear();
+                notifications.success('Sesión cerrada correctamente');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            }
+        });
+
+        // Cargar estadísticas (simulado por ahora)
+        document.getElementById('ordenesActivas').textContent = '0';
+        document.getElementById('ordenesHoy').textContent = '0';
+        document.getElementById('stockBajo').textContent = '0';
+        document.getElementById('facturasPendientes').textContent = '0';
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+/* Responsive Design - Media Queries */
+
+/* Mobile First Approach */
+
+/* Small devices (sm - 640px and up) */
+@media (min-width: 640px) {
+    .container {
+        padding: 0 var(--spacing-lg);
+    }
+}
+
+/* Medium devices (md - 768px and up) */
+@media (min-width: 768px) {
+    .grid-md-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-md-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-md-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Large devices (lg - 1024px and up) */
+@media (min-width: 1024px) {
+    .grid-lg-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-lg-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Mobile Specific Styles */
+@media (max-width: 767px) {
+    .hide-mobile {
+        display: none !important;
+    }
+
+    .modal-dialog {
+        width: 95%;
+        margin: var(--spacing-md) auto;
+    }
+
+    .table {
+        font-size: var(--font-size-xs);
+    }
+
+    .table th,
+    .table td {
+        padding: var(--spacing-sm);
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .btn-block-mobile {
+        width: 100%;
+    }
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+    .hide-desktop {
+        display: none !important;
+    }
+}

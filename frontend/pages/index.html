@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SysMecanica</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/forms.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: var(--spacing-md);
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-2xl);
+            padding: var(--spacing-2xl);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-md);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: var(--border-radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--white);
+        }
+
+        .login-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .demo-credentials {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+        }
+
+        .demo-credentials strong {
+            color: var(--text-primary);
+        }
+
+        .demo-credentials p {
+            margin: 0.25rem 0;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">🔧</div>
+                <h1 class="login-title">SysMecanica</h1>
+                <p class="login-subtitle">Sistema de Gestión de Taller Mecánico</p>
+            </div>
+
+            <div class="demo-credentials">
+                <strong>Credenciales de demostración:</strong>
+                <p>Email: admin@sysmecanica.com</p>
+                <p>Contraseña: admin123</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label form-label-required">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="usuario@ejemplo.com"
+                        value="admin@sysmecanica.com"
+                        required
+                    >
+                    <div class="invalid-feedback"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label form-label-required">Contraseña</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="••••••••"
+                        value="admin123"
+                        required
+                    >
+                    <div class="invalid-feedback"></div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                        <span id="loginBtnText">Iniciar Sesión</span>
+                        <span id="loginSpinner" class="spinner" style="display: none;"></span>
+                    </button>
+                </div>
+
+                <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+            </form>
+        </div>
+
+        <div class="text-center mt-md" style="color: rgba(255, 255, 255, 0.9);">
+            <small>© 2026 SysMecanica. Todos los derechos reservados.</small>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/api/client.js"></script>
+    <script src="../assets/js/utils/storage.js"></script>
+    <script src="../assets/js/utils/notifications.js"></script>
+    <script src="../assets/js/utils/validation.js"></script>
+
+    <script>
+        // Verificar si ya está autenticado
+        if (storage.auth.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginBtnText = document.getElementById('loginBtnText');
+        const loginSpinner = document.getElementById('loginSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validar formulario
+            const isValid = validation.validateForm(loginForm, {
+                email: {
+                    required: true,
+                    email: true,
+                    messages: {
+                        required: 'El email es requerido',
+                        email: 'Ingrese un email válido'
+                    }
+                },
+                password: {
+                    required: true,
+                    minLength: 6,
+                    messages: {
+                        required: 'La contraseña es requerida',
+                        minLength: 'La contraseña debe tener al menos 6 caracteres'
+                    }
+                }
+            });
+
+            if (!isValid) {
+                return;
+            }
+
+            // Deshabilitar botón y mostrar spinner
+            loginBtn.disabled = true;
+            loginBtnText.style.display = 'none';
+            loginSpinner.style.display = 'inline-block';
+            errorMessage.style.display = 'none';
+
+            try {
+                // Obtener valores del formulario
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                // Hacer login
+                const response = await api.post('/auth/login', { email, password });
+
+                // Guardar tokens y usuario
+                storage.auth.setTokens(response.accessToken, response.refreshToken);
+                storage.auth.setUser(response.user);
+
+                // Notificar éxito
+                notifications.success('¡Bienvenido! Redirigiendo...');
+
+                // Redirigir al dashboard
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+
+            } catch (error) {
+                console.error('Error en login:', error);
+
+                // Mostrar mensaje de error
+                errorMessage.textContent = error.message || 'Error al iniciar sesión. Verifique sus credenciales.';
+                errorMessage.style.display = 'block';
+
+                // Rehabilitar botón
+                loginBtn.disabled = false;
+                loginBtnText.style.display = 'inline';
+                loginSpinner.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
