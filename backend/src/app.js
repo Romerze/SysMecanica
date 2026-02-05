@@ -43,6 +43,8 @@ app.get('/health', (req, res) => {
 // Rutas de API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/clientes', require('./routes/clientes'));
+app.use('/api/vehiculos', require('./routes/vehiculos'));
 
 // Ruta raíz
 app.get('/', (req, res) => {
@@ -52,7 +54,9 @@ app.get('/', (req, res) => {
         endpoints: {
             health: '/health',
             auth: '/api/auth',
-            users: '/api/users'
+            users: '/api/users',
+            clientes: '/api/clientes',
+            vehiculos: '/api/vehiculos'
         }
     });
 });
